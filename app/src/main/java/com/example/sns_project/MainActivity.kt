@@ -1,8 +1,7 @@
-package com.example.bottomnavigation
+package com.example.sns_project
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -53,9 +52,5 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.fl_container, fragment)
             .commit()
     }
-
-
-
-
 
 }
