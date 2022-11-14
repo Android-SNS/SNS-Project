@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.sns_project.databinding.ActivityAddpostBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -23,9 +22,6 @@ import java.util.*
 
 
 class AddPostingActivity : AppCompatActivity() {
-    //lateinit var binding: ActivityAddpostBinding
-
-    var Pick_Image_From_Album = 0 //request code
     val REQUEST_GET_IMAGE = 105
     var storage: FirebaseStorage? = null //파이어베이스 객체를 담은 변수
     var photoUri : Uri? = null //사진 Uri를 담을 변수
@@ -43,11 +39,6 @@ class AddPostingActivity : AppCompatActivity() {
 
         //Open the album
         imageView.setOnClickListener {
-//            val photoPickerIntent = Intent(Intent.ACTION_PICK) //사진 가져오기
-//            // println(photoPickerIntent)
-//            photoPickerIntent.type = "image/*"
-//            startActivityForResult(photoPickerIntent, Pick_Image_From_Album) //이미지 정보 넘기기
-//            //activityResult.launch(photoPickerIntent)
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, REQUEST_GET_IMAGE)
@@ -61,25 +52,8 @@ class AddPostingActivity : AppCompatActivity() {
         }
     }
 
-    //    //결과 가져오기
-//    private val activityResult: ActivityAddpostBinding<Intent> = registerForActivityResult(
-//        ActivityAddpostBinding.StartActivityForResult()){}
-//
-//    )
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-//        if(resultCode == Pick_Image_From_Album) {
-//            if (resultCode == Activity.RESULT_OK) { //사진을 골랐을 때라면
-//                //this ispath to the selected image
-//                photoUri = data?.data //경로 넣고
-//                //Toast.makeText(this, photoUri, Toast.LENGTH_SHORT).show()
-//                imageView.setImageURI(photoUri) //사진표시
-//            } else {
-//                //exit the addpostingActivity if you leave the album without selecting it
-//                finish()
-//            }
-//        }
 
         if(resultCode == Activity.RESULT_OK){
             when(requestCode){
@@ -99,10 +73,8 @@ class AddPostingActivity : AppCompatActivity() {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_.png"
         val storageRef = storage?.reference?.child("images")?.child(imageFileName)
-        //val storageRef = fbStorage?.reference?.child("images")?.child(imgFileName)
-        //val storageRef = storage?.reference?.child("images/")?.child(imgFileName) // 폴더명/파일이름
 
-        //file upload
+        //file upload(promise)
         storageRef?.putFile(photoUri!!)?.continueWithTask() {task: com.google.android.gms.tasks.Task<UploadTask.TaskSnapshot> ->
             return@continueWithTask storageRef.downloadUrl}?.addOnSuccessListener {
                 uri ->
@@ -111,11 +83,6 @@ class AddPostingActivity : AppCompatActivity() {
             Toast.makeText(this, "Upload Success",
                 Toast.LENGTH_SHORT).show()
 
-            //val uri = taskSnapshot.downloadUrl
-            //디비에 바인딩 할 위치 생성 및 컬렉션(테이블)에 데이터 집합 생성
-
-
-            //시간 생성
             val contentDTO = ContentDTO()
 
             //이미지 주소
