@@ -1,31 +1,63 @@
-package com.example.firebaseex
+package com.example.sns_project
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.firebaseex.databinding.ActivityMainBinding
-import com.google.firebase.auth.ktx.auth
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
+        val bnv_main = findViewById<BottomNavigationView>(R.id.bnv_main)
 
-        if (Firebase.auth.currentUser == null) {
-            startActivity(
-                Intent(this, LoginActivity::class.java))
-            finish()
+        //supportFragmentManager.beginTransaction().add(R.id.fl_con, NaviHomeFragment()).commit()
+
+        bnv_main.setOnItemSelectedListener { item ->
+            changeFragment(
+                when (item.itemId) {
+                    R.id.home -> {
+                        //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv1)
+                        //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv1)
+                        HomeFragment()
+                        // Respond to navigation item 1 click
+                    }
+                    R.id.search -> {
+                        //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv2)
+                        //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv2)
+                        var searchFragment = SearchFragment()
+                        var bundle = Bundle()
+                        var uid = FirebaseAuth.getInstance().currentUser?.uid
+                        bundle.putString("destinationUid", uid)
+                        searchFragment.arguments = bundle
+                        SearchFragment()
+                        // Respond to navigation item 2 click
+                    }
+                    R.id.profile -> {
+                        //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv2)
+                        //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv2)
+                        ProfileFragment()
+                        // Respond to navigation item 3 click
+                    }
+                    else -> {
+                        //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv1)
+                        //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv1)
+                        HomeFragment()
+                    }
+                }
+            )
+            true
         }
-
-        binding.textUID.text = Firebase.auth.currentUser?.uid ?: "No User"
-
-        binding.buttonSignout.setOnClickListener {
-            Firebase.auth.signOut()
-            startActivity(
-                Intent(this, MainActivity::class.java))
-        }
-
+        bnv_main.selectedItemId = R.id.home
     }
+
+    private fun changeFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fl_container, fragment)
+            .commit()
+    }
+
 }
