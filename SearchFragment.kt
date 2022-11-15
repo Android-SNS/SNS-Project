@@ -62,17 +62,20 @@ class SearchFragment : Fragment() {
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
 
         searchbtn.setOnClickListener {
-            val uid = searchBar.text.toString()
-            val db = Firebase.firestore
-            val userCollection = db.collection("users")
-            contentDTOs.clear()
-            userCollection.document(uid).get().addOnSuccessListener {
-                var nickname = it["nickname"].toString()
-                var user = ContentDTO(null, null, uid, nickname
-                , null, null, HashMap())
-                contentDTOs.add(user)
-            }.addOnFailureListener {}
-            adapter.notifyDataSetChanged()
+            if(searchBar.text.isNotEmpty()) {
+                val uid = searchBar.text.toString()
+                val db = Firebase.firestore
+                val userCollection = db.collection("users")
+                contentDTOs.clear()
+                userCollection.document(uid).get().addOnSuccessListener {
+                    var nickname = it["nickname"].toString()
+                    var user = ContentDTO(
+                        null, null, uid, nickname, null, null, HashMap()
+                    )
+                    contentDTOs.add(user)
+                }.addOnFailureListener {}
+                adapter.notifyDataSetChanged()
+            }
         }
         return view
     }
