@@ -2,10 +2,12 @@ package com.example.sns_project
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sns_project.databinding.ActivitySignupBinding
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class SignUpActivity : AppCompatActivity() {
@@ -21,12 +23,22 @@ class SignUpActivity : AppCompatActivity() {
             else {
                 val userEmail = binding.username.text.toString()
                 val password = binding.password.text.toString()
-                addUser(userEmail, password)
+                val nickname = binding.nickname.text.toString()
+                addUser(userEmail, password, nickname)
             }
         }
     }
 
-    private fun addUser(userEmail: String, password: String) {
+    private fun addUser(userEmail: String, password: String, nickname: String) {
+        val db = Firebase.firestore
+        val userCollection = db.collection("users")
+        val itemMap = hashMapOf(
+            "nickname" to nickname
+        )
+
+        userCollection.document(userEmail).set(itemMap)
+            .addOnSuccessListener {
+            }.addOnFailureListener {  }
         Firebase.auth.createUserWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this) {
                 startActivity(
