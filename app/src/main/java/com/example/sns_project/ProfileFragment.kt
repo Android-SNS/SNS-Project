@@ -97,7 +97,7 @@ class ProfileFragment : Fragment() {
                     contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
                 }
                 //포스트 개수 불러오기
-                //R.id.account_tv_post_count = contentDTOs.size.toString().toInt()
+                view?.findViewById<TextView>(R.id.account_tv_post_count)?.text = contentDTOs.size.toString()
                 //리사이클러뷰가 최신화 할 수 있게
                 notifyDataSetChanged()
             }
