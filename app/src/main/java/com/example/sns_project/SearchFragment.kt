@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -31,6 +32,8 @@ class SearchFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
+    var uid : String? = null
+    var auth : FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,14 +44,14 @@ class SearchFragment : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_search, container, false)
         val recyclerview = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerview.setHasFixedSize(true)
+
+        uid = arguments?.getString("destinationUid")
+        auth = FirebaseAuth.getInstance()
 
         val adapter = SearchAdapter()
         recyclerview.adapter = adapter
@@ -63,18 +66,18 @@ class SearchFragment : Fragment() {
 
         searchbtn.setOnClickListener {
             if(searchBar.text.isNotEmpty()) {
-                val uid = searchBar.text.toString()
+                val userId = searchBar.text.toString()
                 val db = Firebase.firestore
                 val userCollection = db.collection("users")
                 contentDTOs.clear()
-                userCollection.document(uid).get().addOnSuccessListener {
-                    var nickname = it["nickname"].toString()
-                    var user = ContentDTO(
-                        null, null, uid, nickname, null, null, HashMap()
-                    )
-                    contentDTOs.add(user)
-                }.addOnFailureListener {}
-                adapter.notifyDataSetChanged()
+                userCollection.whereEqualTo("userId", userId).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if(querySnapshot == null) return@addSnapshotListener
+                    //데이터 가져오기
+                    for(snapshot in querySnapshot.documents){
+                        contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
+                    }
+                    adapter.notifyDataSetChanged()
+                }
             }
         }
         return view
@@ -94,8 +97,8 @@ class SearchFragment : Fragment() {
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             val user = contentDTOs[position]
 
-            holder.itemView.findViewById<TextView>(R.id.username).text = user.uid
-            holder.itemView.findViewById<TextView>(R.id.fullname).text = user.userId
+            holder.itemView.findViewById<TextView>(R.id.username).text = user.userId
+            holder.itemView.findViewById<TextView>(R.id.fullname).text = user.nickname
         }
 
         override fun getItemCount(): Int {

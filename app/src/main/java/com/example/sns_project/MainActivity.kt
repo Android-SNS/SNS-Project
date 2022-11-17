@@ -40,20 +40,20 @@ class MainActivity : AppCompatActivity() {
                     R.id.search -> {
                         //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv2)
                         //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv2)
-                        var searchFragment = SearchFragment()
-                        var bundle = Bundle()
-                        var uid = FirebaseAuth.getInstance().currentUser?.uid
+                        val searchFragment = SearchFragment()
+                        val bundle = Bundle()
+                        val uid = FirebaseAuth.getInstance().currentUser?.uid
                         bundle.putString("destinationUid", uid)
                         searchFragment.arguments = bundle
-                        SearchFragment()
+                        searchFragment
                         // Respond to navigation item 2 click
                     }
                     R.id.profile -> {
                         //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv2)
                         //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv2)
-                        var profileFragment = ProfileFragment()
-                        var bundle = Bundle()
-                        var uid = FirebaseAuth.getInstance().currentUser?.uid
+                        val profileFragment = ProfileFragment()
+                        val bundle = Bundle()
+                        val uid = FirebaseAuth.getInstance().currentUser?.uid
                         bundle.putString("destinationUid",uid)
                         profileFragment.arguments = bundle
                         profileFragment

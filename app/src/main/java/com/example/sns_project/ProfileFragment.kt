@@ -50,7 +50,7 @@ class ProfileFragment : Fragment() {
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        var fragmentView =  inflater.inflate(R.layout.fragment_profile, container, false)
+        val fragmentView =  inflater.inflate(R.layout.fragment_profile, container, false)
         val multiButton = fragmentView.findViewById<Button>(R.id.account_btn_follow_signout)
         val accountRecyclerview = fragmentView.findViewById<RecyclerView>(R.id.account_recyclerview)
         //이전 화면에서 넘어온 값을 받아옴
@@ -79,6 +79,7 @@ class ProfileFragment : Fragment() {
         return fragmentView
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     inner class UserFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
         //생성자
@@ -96,8 +97,8 @@ class ProfileFragment : Fragment() {
             }
         }
         override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
-            var width = resources.displayMetrics.widthPixels / 3
-            var imageView = ImageView(p0.context)
+            val width = resources.displayMetrics.widthPixels / 3
+            val imageView = ImageView(p0.context)
             imageView.layoutParams = LinearLayoutCompat.LayoutParams(width,width)
             return CustomViewHolder(imageView)
         }
@@ -107,7 +108,7 @@ class ProfileFragment : Fragment() {
         }
 
         override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
-        var imageView = (p0 as CustomViewHolder).imageView
+        val imageView = (p0 as CustomViewHolder).imageView
         Glide.with(p0.itemView.context).load(contentDTOs[p1].imageUrl).apply(RequestOptions().centerCrop()).into(imageView)
         }
 
