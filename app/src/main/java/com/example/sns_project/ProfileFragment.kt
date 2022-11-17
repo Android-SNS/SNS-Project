@@ -2,7 +2,6 @@ package com.example.sns_project
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.media.session.PlaybackState
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,7 +17,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -37,7 +34,6 @@ class ProfileFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    var fragmentView : View? = null
     var firestore : FirebaseFirestore? = null
     var uid : String? = null
     var auth : FirebaseAuth? = null
@@ -61,12 +57,11 @@ class ProfileFragment : Fragment() {
         uid = arguments?.getString("destinationUid")
         firestore = FirebaseFirestore.getInstance() //초기화
         auth = FirebaseAuth.getInstance() // 초기화
-
         currentUserUid  = auth?.currentUser?.uid
 
         //나의 계정
         if(uid == currentUserUid){
-        //mypage
+        //my page
             multiButton.text = getString(R.string.signout)
             multiButton.setOnClickListener {
                 activity?.finish()
@@ -76,11 +71,9 @@ class ProfileFragment : Fragment() {
             }
         }
         else{
-            //other user  page
+            //other user page
             multiButton.text = getString(R.string.follow)
-
         }
-
         accountRecyclerview.adapter = UserFragmentRecyclerViewAdapter()
         accountRecyclerview.layoutManager = GridLayoutManager(requireActivity(),3) // activity!! 대신 requireActivity 넣었음
         return fragmentView
