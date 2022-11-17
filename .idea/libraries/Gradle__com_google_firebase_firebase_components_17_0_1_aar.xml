@@ -5,14 +5,14 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/616132f0c06402d1506fcbe5b88002b4/transformed/firebase-components-17.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/616132f0c06402d1506fcbe5b88002b4/transformed/firebase-components-17.0.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/616132f0c06402d1506fcbe5b88002b4/transformed/firebase-components-17.0.1/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/7a9d349d4f640cbb5b66a66a76c8e5e0/transformed/firebase-components-17.0.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/7a9d349d4f640cbb5b66a66a76c8e5e0/transformed/firebase-components-17.0.1/AndroidManifest.xml" />
+      <root url="jar://$PROJECT_DIR$/../firebasestorageex/caches/transforms-3/d8c221bfdbb811a998611da290e00f76/transformed/firebase-components-17.0.1/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/../firebasestorageex/caches/transforms-3/d8c221bfdbb811a998611da290e00f76/transformed/firebase-components-17.0.1/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-components/17.0.1/25dd870fd6dea1a3a5df01ce1a02127638a44751/firebase-components-17.0.1-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../firebasestorageex/caches/modules-2/files-2.1/com.google.firebase/firebase-components/17.0.1/25dd870fd6dea1a3a5df01ce1a02127638a44751/firebase-components-17.0.1-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-components/17.0.1/f0059600ec5c35df09ef78393e9b87e05a34ab45/firebase-components-17.0.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../firebasestorageex/caches/modules-2/files-2.1/com.google.firebase/firebase-components/17.0.1/f0059600ec5c35df09ef78393e9b87e05a34ab45/firebase-components-17.0.1-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

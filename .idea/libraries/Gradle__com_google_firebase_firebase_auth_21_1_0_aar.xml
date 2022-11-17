@@ -5,11 +5,11 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fe0bd1e93d3693ac9bedd115f359e122/transformed/firebase-auth-21.1.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fe0bd1e93d3693ac9bedd115f359e122/transformed/firebase-auth-21.1.0/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/fe0bd1e93d3693ac9bedd115f359e122/transformed/firebase-auth-21.1.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/c6f8f524e7b7f8c7d6f0125b7e5690d6/transformed/firebase-auth-21.1.0/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/c6f8f524e7b7f8c7d6f0125b7e5690d6/transformed/firebase-auth-21.1.0/jars/classes.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../firebasestorageex/caches/transforms-3/70c56d67ffa8b09fc141d5594ac018c6/transformed/firebase-auth-21.1.0/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/../firebasestorageex/caches/transforms-3/70c56d67ffa8b09fc141d5594ac018c6/transformed/firebase-auth-21.1.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-auth/21.1.0/8fe4e2822e0807fe7cf8eaebb350de61677c793f/firebase-auth-21.1.0-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../firebasestorageex/caches/modules-2/files-2.1/com.google.firebase/firebase-auth/21.1.0/8fe4e2822e0807fe7cf8eaebb350de61677c793f/firebase-auth-21.1.0-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES />
   </library>
