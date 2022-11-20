@@ -13,6 +13,7 @@
     <string name="following">Following</string>
     <string name="follower">Follower</string>
     <string name="follow">Follow</string>
+    <string name="follow_cancel">Follow Cancel</string>
     <string name="count_0">0</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
