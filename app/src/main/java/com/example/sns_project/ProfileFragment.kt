@@ -1,6 +1,7 @@
 package com.example.sns_project
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -54,10 +55,12 @@ class ProfileFragment : Fragment() {
         val multiButton = fragmentView.findViewById<Button>(R.id.account_btn_follow_signout)
         val accountRecyclerview = fragmentView.findViewById<RecyclerView>(R.id.account_recyclerview)
         //이전 화면에서 넘어온 값을 받아옴
-        uid = arguments?.getString("destinationUid")
+        //uid = arguments?.getString("destinationUid")
         firestore = FirebaseFirestore.getInstance() //초기화
         auth = FirebaseAuth.getInstance() // 초기화
-        currentUserUid  = auth?.currentUser?.uid
+        currentUserUid = auth?.currentUser?.uid
+        val prefs = requireActivity().getSharedPreferences("PREFS", 0)
+        uid = prefs.getString("profileId", "none")
 
         //나의 계정
         if(uid == currentUserUid){

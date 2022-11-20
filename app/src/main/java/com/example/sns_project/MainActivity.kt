@@ -1,6 +1,7 @@
 package com.example.sns_project
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.replace
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
@@ -21,6 +23,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val bnv_main = findViewById<BottomNavigationView>(R.id.bnv_main)
+        val email = FirebaseAuth.getInstance().currentUser?.email
+        val db = Firebase.firestore
+        val userCollection = db.collection("users")
+
+        userCollection.document(email!!).update("uid", FirebaseAuth.getInstance().currentUser?.uid)
+            .addOnSuccessListener {
+                }.addOnFailureListener {  }
 
         ActivityCompat.requestPermissions(this,
             arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
@@ -51,12 +60,11 @@ class MainActivity : AppCompatActivity() {
                     R.id.profile -> {
                         //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv2)
                         //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv2)
-                        val profileFragment = ProfileFragment()
-                        val bundle = Bundle()
+                        val editor = getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit()
                         val uid = FirebaseAuth.getInstance().currentUser?.uid
-                        bundle.putString("destinationUid",uid)
-                        profileFragment.arguments = bundle
-                        profileFragment
+                        editor.putString("profileId", uid)
+                        editor.apply()
+                        ProfileFragment()
                         // Respond to navigation item 3 click
                     }
                     else -> {

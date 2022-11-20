@@ -16,9 +16,14 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.login.setOnClickListener {
-            val userEmail = binding.username.text.toString()
-            val password = binding.password.text.toString()
-            doLogin(userEmail, password)
+            if (binding.password.length() < 6) {
+                Toast.makeText(this, "비밀번호는 6자 이상 입력해주세요.", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                val userEmail = binding.username.text.toString()
+                val password = binding.password.text.toString()
+                doLogin(userEmail, password)
+            }
         }
 
         binding.signup.setOnClickListener {

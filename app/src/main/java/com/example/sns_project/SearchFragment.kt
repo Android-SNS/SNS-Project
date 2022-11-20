@@ -2,6 +2,7 @@ package com.example.sns_project
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,9 +12,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.dynamic.SupportFragmentWrapper
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -70,7 +77,7 @@ class SearchFragment : Fragment() {
                 val db = Firebase.firestore
                 val userCollection = db.collection("users")
                 contentDTOs.clear()
-                userCollection.whereEqualTo("userId", userId).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                userCollection.whereEqualTo("userId", userId).addSnapshotListener { querySnapshot, _ ->
                     if(querySnapshot == null) return@addSnapshotListener
                     //데이터 가져오기
                     for(snapshot in querySnapshot.documents){
@@ -85,7 +92,7 @@ class SearchFragment : Fragment() {
 
     inner class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
-        inner class ViewHolder(var view: View) : RecyclerView.ViewHolder(view){
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
 
         }
 
@@ -96,15 +103,62 @@ class SearchFragment : Fragment() {
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             val user = contentDTOs[position]
+            val followbtn = holder.itemView.findViewById<Button>(R.id.btn_follow)
 
             holder.itemView.findViewById<TextView>(R.id.username).text = user.userId
             holder.itemView.findViewById<TextView>(R.id.fullname).text = user.nickname
+            isFollowing(user.uid!!, holder.itemView.findViewById(R.id.btn_follow))
+            if(user.uid?.equals(arguments?.getString("destinationUid")) == true)
+                followbtn.visibility = View.GONE
+            else
+                followbtn.visibility = View.VISIBLE
+
+            holder.itemView.setOnClickListener {
+                val editor = context!!.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit()
+                editor.putString("profileId", user.uid)
+                editor.apply()
+
+                activity!!.supportFragmentManager.beginTransaction().
+                replace(R.id.fl_container, ProfileFragment()).commit()
+            }
+
+            followbtn.setOnClickListener {
+                if (followbtn.text.toString() == "follow"){
+                    FirebaseDatabase.getInstance().getReference().child("Follow").child(FirebaseAuth.getInstance().currentUser!!.uid)
+                        .child("following").child(user.uid!!).setValue(true)
+                    FirebaseDatabase.getInstance().getReference().child("Follow").child(user.uid!!)
+                        .child("followers").child(FirebaseAuth.getInstance().currentUser!!.uid).setValue(true)
+                } else {
+                    FirebaseDatabase.getInstance().getReference().child("Follow").child(FirebaseAuth.getInstance().currentUser!!.uid)
+                        .child("following").child(user.uid!!).removeValue()
+                    FirebaseDatabase.getInstance().getReference().child("Follow").child(user.uid!!)
+                        .child("followers").child(FirebaseAuth.getInstance().currentUser!!.uid).removeValue()
+                }
+            }
         }
 
         override fun getItemCount(): Int {
             return contentDTOs.size
         }
 
+        private fun isFollowing(uid: String, button: Button) {
+            val reference = FirebaseDatabase.getInstance().reference.child("Follow").
+            child(FirebaseAuth.getInstance().currentUser!!.uid).child("following")
+            val valueEventListener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.child(uid).exists()){
+                        button.text = "following"
+                    } else {
+                        button.text = "follow"
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            }
+            reference.addValueEventListener(valueEventListener)
+        }
     }
 
     companion object {
