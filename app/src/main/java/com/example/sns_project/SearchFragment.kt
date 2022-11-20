@@ -2,7 +2,6 @@ package com.example.sns_project
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,10 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.dynamic.SupportFragmentWrapper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -108,6 +105,7 @@ class SearchFragment : Fragment() {
             holder.itemView.findViewById<TextView>(R.id.username).text = user.userId
             holder.itemView.findViewById<TextView>(R.id.fullname).text = user.nickname
             isFollowing(user.uid!!, holder.itemView.findViewById(R.id.btn_follow))
+
             if(user.uid?.equals(arguments?.getString("destinationUid")) == true)
                 followbtn.visibility = View.GONE
             else

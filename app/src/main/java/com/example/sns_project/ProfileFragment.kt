@@ -1,7 +1,6 @@
 package com.example.sns_project
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -18,7 +17,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,7 +53,6 @@ class ProfileFragment : Fragment() {
         val multiButton = fragmentView.findViewById<Button>(R.id.account_btn_follow_signout)
         val accountRecyclerview = fragmentView.findViewById<RecyclerView>(R.id.account_recyclerview)
         //이전 화면에서 넘어온 값을 받아옴
-        //uid = arguments?.getString("destinationUid")
         firestore = FirebaseFirestore.getInstance() //초기화
         auth = FirebaseAuth.getInstance() // 초기화
         currentUserUid = auth?.currentUser?.uid
