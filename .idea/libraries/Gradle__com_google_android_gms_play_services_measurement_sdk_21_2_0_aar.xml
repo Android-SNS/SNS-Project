@@ -7,9 +7,12 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/838bd37689cab130eef3d671ec5a1796/transformed/play-services-measurement-sdk-21.2.0/jars/classes.jar!/" />
       <root url="jar://$PROJECT_DIR$/../firebasestorageex/caches/transforms-3/a84832127154099854b888e3d86af45c/transformed/play-services-measurement-sdk-21.2.0/jars/classes.jar!/" />
       <root url="file://$PROJECT_DIR$/../firebasestorageex/caches/transforms-3/a84832127154099854b888e3d86af45c/transformed/play-services-measurement-sdk-21.2.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/a84832127154099854b888e3d86af45c/transformed/play-services-measurement-sdk-21.2.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/a84832127154099854b888e3d86af45c/transformed/play-services-measurement-sdk-21.2.0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/../firebasestorageex/caches/modules-2/files-2.1/com.google.android.gms/play-services-measurement-sdk/21.2.0/e30555d01f4b419de1eed6ceed27b98aedecf946/play-services-measurement-sdk-21.2.0-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-measurement-sdk/21.2.0/e30555d01f4b419de1eed6ceed27b98aedecf946/play-services-measurement-sdk-21.2.0-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES />
   </library>
