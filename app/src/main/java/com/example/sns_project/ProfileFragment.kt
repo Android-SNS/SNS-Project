@@ -72,8 +72,9 @@ class ProfileFragment : Fragment() {
 
         //나의 계정
         if(uid == currentUserUid){
-        //mypage
-            multiButton.text = getString(R.string.signout)
+
+            //multiButton.text = getString(R.string.signout)
+            multiButton.setText("signout")
             multiButton.setOnClickListener {
                 activity?.finish()
                 startActivity(
@@ -121,7 +122,7 @@ class ProfileFragment : Fragment() {
 
     private fun getFollowerAndFollwing(){
         //내페이지를 입력햇을때 내 uid 이고 상대방 페이지를 누르면 상대방의 uid
-        firestore?.collection("users")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+        firestore?.collection("following")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
                 if(documentSnapshot == null) return@addSnapshotListener
                  val followDTO  = documentSnapshot.toObject(FollowDTO::class.java)
             if(followDTO?.follwingCount != null){
@@ -129,19 +130,20 @@ class ProfileFragment : Fragment() {
             }
             if(followDTO?.follwerCount != null){
                 view?.findViewById<TextView>(R.id.account_tv_follower_count)?.text = followDTO.follwerCount.toString()
-                if(followDTO.followers.containsKey(currentUserUid!!)){
-                    view?.findViewById<TextView>(R.id.account_btn_follow_signout)?.text = getString(R.string.follow_cancel)
+            }
+            if (uid != currentUserUid){
+                if(followDTO?.followers!!.containsKey(currentUserUid!!)){
+                    view?.findViewById<Button>(R.id.account_btn_follow_signout)?.text = getString(R.string.follow_cancel)
 
                 }else{
-                    view?.findViewById<TextView>(R.id.account_btn_follow_signout)?.text = getString(R.string.follow)
+                    view?.findViewById<Button>(R.id.account_btn_follow_signout)?.text = getString(R.string.follow)
                 }
             }
-
         }
     }
     private fun requestFollow(){
         //나의 계정에는 누구를 팔로우 하는 지
-    val tsDocFollowing = firestore?.collection("users")?.document(currentUserUid!!)
+    val tsDocFollowing = firestore?.collection("following")?.document(currentUserUid!!)
         firestore?.runTransaction{
         transaction ->
             var followDTO = transaction.get(tsDocFollowing!!).toObject(FollowDTO::class.java)
@@ -171,7 +173,7 @@ class ProfileFragment : Fragment() {
         }
 
         // 내가 팔로잉 할 상대방 계정의 접근
-        val tsDocFollower = firestore?.collection("users")?.document(uid!!)
+        val tsDocFollower = firestore?.collection("following")?.document(uid!!)
         firestore?.runTransaction{
             transaction ->
             var followDTO = transaction.get(tsDocFollower!!).toObject(FollowDTO::class.java)
