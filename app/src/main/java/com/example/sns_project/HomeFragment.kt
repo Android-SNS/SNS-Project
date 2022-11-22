@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 //import com.example.sns_project.databinding.FragmentHomeBinding
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,13 +42,13 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val uploadView = inflater.inflate(R.layout.fragment_home, container, false)
-        val upload = R.id.floatingActionButton
         //Intent addPostingActivity = new Intent(getActivity(), addPostingActivity.class)
 
 //        ActivityCompat.requestPermissions(activity,
 //            arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+        val fButton = uploadView.findViewById<FloatingActionButton>(R.id.floatingActionButton)
 
-        uploadView?.floatingActionButton?.setOnClickListener {
+        fButton.setOnClickListener {
             activity?.finish()
             startActivity(
                 Intent(activity, AddPostingActivity::class.java))

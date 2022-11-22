@@ -2,8 +2,6 @@
   <library name="Gradle: com.google.firebase:firebase-auth-ktx:21.1.0@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/9007409dd5c346219a30cd2055ed1c43/transformed/firebase-auth-ktx-21.1.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/78b1e4165e8bef9a3c945446ee8518f5/transformed/firebase-auth-ktx-21.1.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/78b1e4165e8bef9a3c945446ee8518f5/transformed/firebase-auth-ktx-21.1.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/78b1e4165e8bef9a3c945446ee8518f5/transformed/firebase-auth-ktx-21.1.0/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/9007409dd5c346219a30cd2055ed1c43/transformed/firebase-auth-ktx-21.1.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/9007409dd5c346219a30cd2055ed1c43/transformed/firebase-auth-ktx-21.1.0/AndroidManifest.xml" />

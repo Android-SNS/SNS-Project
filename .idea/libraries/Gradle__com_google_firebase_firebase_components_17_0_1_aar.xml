@@ -2,9 +2,7 @@
   <library name="Gradle: com.google.firebase:firebase-components:17.0.1@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/7a9d349d4f640cbb5b66a66a76c8e5e0/transformed/firebase-components-17.0.1/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/616132f0c06402d1506fcbe5b88002b4/transformed/firebase-components-17.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/616132f0c06402d1506fcbe5b88002b4/transformed/firebase-components-17.0.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/616132f0c06402d1506fcbe5b88002b4/transformed/firebase-components-17.0.1/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/7a9d349d4f640cbb5b66a66a76c8e5e0/transformed/firebase-components-17.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/7a9d349d4f640cbb5b66a66a76c8e5e0/transformed/firebase-components-17.0.1/AndroidManifest.xml" />
     </CLASSES>

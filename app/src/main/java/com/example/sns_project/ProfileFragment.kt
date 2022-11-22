@@ -1,17 +1,19 @@
 package com.example.sns_project
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.media.session.PlaybackState
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -19,10 +21,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.sns_project.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.fragment_profile.view.*
-import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_addpost.*
-import kotlinx.android.synthetic.main.activity_login.view.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -37,21 +35,21 @@ private const val ARG_PARAM2 = "param2"
  */
 
 class ProfileFragment : Fragment() {
-
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
-    var fragmentView : View? = null
-    lateinit var binding : FragmentProfileBinding
     var firestore : FirebaseFirestore? = null
     var uid : String? = null
-    var auth : FirebaseAuth? = null
+    private var auth : FirebaseAuth? = null
     var currentUserUid : String? = null
-
+    private lateinit var binding: FragmentProfileBinding
+    private lateinit var launcher: ActivityResultLauncher<Intent>
+    private var photoUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = FragmentProfileBinding.inflate(layoutInflater)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -60,26 +58,23 @@ class ProfileFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        var fragmentView =  inflater.inflate(R.layout.fragment_profile, container, false)
+        val fragmentView = inflater.inflate(R.layout.fragment_profile, container, false)
+        val multiButton = fragmentView.findViewById<Button>(R.id.account_btn_follow_signout)
+        val accountRecyclerview = fragmentView.findViewById<RecyclerView>(R.id.account_recyclerview)
         //fragmentView?.account_tv_post_count?.text = "하위"
        // return fragmentView
         //이전 화면에서 넘어온 값을 받아옴
-
-
-
-        uid = arguments?.getString("destinationUid")
         firestore = FirebaseFirestore.getInstance() //초기화
         auth = FirebaseAuth.getInstance() // 초기화
-
-
-
         currentUserUid  = auth?.currentUser?.uid
+        val prefs = requireActivity().getSharedPreferences("PREFS", 0)
+        uid = prefs.getString("profileId", "none")
 
         //나의 계정
         if(uid == currentUserUid){
         //mypage
-            fragmentView?.account_btn_follow_signout?.text = getString(R.string.signout)
-            fragmentView?.account_btn_follow_signout?.setOnClickListener {
+            multiButton.text = getString(R.string.signout)
+            multiButton.setOnClickListener {
                 activity?.finish()
                 startActivity(
                     Intent(activity, LoginActivity::class.java))
@@ -88,46 +83,53 @@ class ProfileFragment : Fragment() {
         }
         else{
             //other user  page
-            fragmentView?.account_btn_follow_signout?.text = getString(R.string.follow)
-
-
-            fragmentView?.account_btn_follow_signout?.setOnClickListener{
+            multiButton.text = getString(R.string.follow)
+            multiButton.setOnClickListener{
                 requestFollow()
             }
-
         }
 
-
-
-        fragmentView?.account_reyclerview?.adapter = UserFragmentRecyclerViewAdapter()
-        fragmentView?.account_reyclerview?.layoutManager = GridLayoutManager(requireActivity(),3) // activity!! 대신 requireActivity 넣었음
+        accountRecyclerview.adapter = UserFragmentRecyclerViewAdapter()
+        accountRecyclerview.layoutManager = GridLayoutManager(requireActivity(),3) // activity!! 대신 requireActivity 넣었음
 
         //프로필 이미지 변경
+        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                when(PICK_PROFILE_FROM_ALBUM){
+                    PICK_PROFILE_FROM_ALBUM -> {
+                        try{
+                            photoUri = it.data?.data
+                            binding.accountIvProfile.setImageURI(photoUri)
+                        } catch (e:Exception){}
+                    }
+                }
+            }
+        }
 
+        val accountIvProfile = fragmentView.findViewById(R.id.account_iv_profile) as ImageView
         //앨범
-        fragmentView?.account_iv_profile?.setOnClickListener {
+        accountIvProfile.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
-            activity?.startActivityForResult(intent, PICK_PROFILE_FROM_ALBUM)
+            launcher.launch(intent)
         }
 
         getProfileImage()
         getFollowerAndFollwing()
         return fragmentView
-
     }
 
-    fun getFollowerAndFollwing(){
+    private fun getFollowerAndFollwing(){
         //내페이지를 입력햇을때 내 uid 이고 상대방 페이지를 누르면 상대방의 uid
         firestore?.collection("users")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
                 if(documentSnapshot == null) return@addSnapshotListener
-                 var followDTO  = documentSnapshot.toObject(FollowDTO::class.java)
+                 val followDTO  = documentSnapshot.toObject(FollowDTO::class.java)
             if(followDTO?.follwingCount != null){
-                view?.findViewById<TextView>(R.id.account_tv_following_count)?.text = followDTO?.follwingCount?.toString()
+                view?.findViewById<TextView>(R.id.account_tv_following_count)?.text = followDTO.follwingCount.toString()
             }
             if(followDTO?.follwerCount != null){
-                view?.findViewById<TextView>(R.id.account_tv_follower_count)?.text = followDTO?.follwerCount?.toString()
-                if(followDTO?.followers?.containsKey(currentUserUid!!)){
+                view?.findViewById<TextView>(R.id.account_tv_follower_count)?.text = followDTO.follwerCount.toString()
+                if(followDTO.followers.containsKey(currentUserUid!!)){
                     view?.findViewById<TextView>(R.id.account_btn_follow_signout)?.text = getString(R.string.follow_cancel)
 
                 }else{
@@ -137,17 +139,17 @@ class ProfileFragment : Fragment() {
 
         }
     }
-    fun requestFollow(){
+    private fun requestFollow(){
         //나의 계정에는 누구를 팔로우 하는 지
-    var tsDocFollowing = firestore?.collection("users")?.document(currentUserUid!!)
+    val tsDocFollowing = firestore?.collection("users")?.document(currentUserUid!!)
         firestore?.runTransaction{
         transaction ->
             var followDTO = transaction.get(tsDocFollowing!!).toObject(FollowDTO::class.java)
             //팔로우 하지 않은 상태
             if(followDTO == null){
             followDTO = FollowDTO()
-                followDTO!!.follwingCount = 1
-                followDTO!!.followers[uid!!] = true
+                followDTO.follwingCount = 1
+                followDTO.followers[uid!!] = true
 
                 transaction.set(tsDocFollowing,followDTO)
                 return@runTransaction
@@ -155,21 +157,21 @@ class ProfileFragment : Fragment() {
             // 팔로우를 한 상태
             if(followDTO.followings.containsKey(uid)){
                 // 팔로우 취소를 하면 된다.
-            followDTO?.follwingCount = followDTO?.follwingCount - 1
-                followDTO?.followers?.remove(uid)
+            followDTO.follwingCount = followDTO.follwingCount - 1
+                followDTO.followers.remove(uid)
 
             }
             else{
                 // 팔로윙을 한다.
-                followDTO?.follwingCount = followDTO?.follwingCount + 1
-                followDTO?.followers[uid!!] = true
+                followDTO.follwingCount = followDTO.follwingCount + 1
+                followDTO.followers[uid!!] = true
             }
             transaction.set(tsDocFollowing,followDTO)
             return@runTransaction
         }
 
         // 내가 팔로잉 할 상대방 계정의 접근
-        var tsDocFollower = firestore?.collection("users")?.document(uid!!)
+        val tsDocFollower = firestore?.collection("users")?.document(uid!!)
         firestore?.runTransaction{
             transaction ->
             var followDTO = transaction.get(tsDocFollower!!).toObject(FollowDTO::class.java)
@@ -200,19 +202,19 @@ class ProfileFragment : Fragment() {
 
     }
 
-
-    fun getProfileImage(){
+    private fun getProfileImage(){
         firestore?.collection("profileImages")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
             if(documentSnapshot == null) return@addSnapshotListener
             if(documentSnapshot.data != null){
-                var url = documentSnapshot?.data!!["image"]
+                val url = documentSnapshot.data!!["image"]
 
-                Glide.with(requireActivity()).load(url).apply(RequestOptions().centerCrop()).into( view?.findViewById<ImageView>(R.id.account_iv_profile)!!)
+                Glide.with(requireActivity()).load(url).apply(RequestOptions().centerCrop()).into( view?.findViewById(R.id.account_iv_profile)!!)
 
 
             }
         }
     }
+
     inner class UserFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
         var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
@@ -238,8 +240,8 @@ class ProfileFragment : Fragment() {
             }
         }
         override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
-          var width = resources.displayMetrics.widthPixels / 3
-            var imageView = ImageView(p0.context)
+            val width = resources.displayMetrics.widthPixels / 3
+            val imageView = ImageView(p0.context)
             imageView.layoutParams = LinearLayoutCompat.LayoutParams(width,width)
             return CustomViewHolder(imageView)
         }
@@ -249,12 +251,14 @@ class ProfileFragment : Fragment() {
         }
 
         override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
-        var imageView = (p0 as CustomViewHolder).imageView
+        val imageView = (p0 as CustomViewHolder).imageView
         Glide.with(p0.itemView.context).load(contentDTOs[p1].imageUrl).apply(RequestOptions().centerCrop()).into(imageView)
+
         }
 
         override fun getItemCount(): Int {
            return contentDTOs.size
+
         }
 
 

@@ -101,7 +101,7 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/account_reyclerview"
+        android:id="@+id/account_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

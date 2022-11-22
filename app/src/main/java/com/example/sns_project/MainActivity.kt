@@ -2,6 +2,7 @@ package com.example.sns_project
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +20,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
-import kotlinx.android.synthetic.main.activity_addpost.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,12 +57,11 @@ class MainActivity : AppCompatActivity() {
                     R.id.profile -> {
                         //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv2)
                         //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv2)
-                        var profileFragment = ProfileFragment()
-                        var bundle = Bundle()
-                        var uid = FirebaseAuth.getInstance().currentUser?.uid
-                        bundle.putString("destinationUid",uid)
-                        profileFragment.arguments = bundle
-                        profileFragment
+                        val editor = getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit()
+                        val uid = FirebaseAuth.getInstance().currentUser?.uid
+                        editor.putString("profileId", uid)
+                        editor.apply()
+                        ProfileFragment()
                         // Respond to navigation item 3 click
                     }
                     else -> {
