@@ -3,6 +3,7 @@
     <ANNOTATIONS>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/3c84f16da8e54ec71f7a43632e45e209/transformed/browser-1.4.0/annotations.zip!/" />
       <root url="jar://$PROJECT_DIR$/../firebasestorageex/caches/transforms-3/afcf66bd9e6afb9542c9ad8924ba4563/transformed/browser-1.4.0/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/afcf66bd9e6afb9542c9ad8924ba4563/transformed/browser-1.4.0/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/3c84f16da8e54ec71f7a43632e45e209/transformed/browser-1.4.0/AndroidManifest.xml" />
@@ -11,10 +12,14 @@
       <root url="file://$PROJECT_DIR$/../firebasestorageex/caches/transforms-3/afcf66bd9e6afb9542c9ad8924ba4563/transformed/browser-1.4.0/AndroidManifest.xml" />
       <root url="jar://$PROJECT_DIR$/../firebasestorageex/caches/transforms-3/afcf66bd9e6afb9542c9ad8924ba4563/transformed/browser-1.4.0/jars/classes.jar!/" />
       <root url="file://$PROJECT_DIR$/../firebasestorageex/caches/transforms-3/afcf66bd9e6afb9542c9ad8924ba4563/transformed/browser-1.4.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/afcf66bd9e6afb9542c9ad8924ba4563/transformed/browser-1.4.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/afcf66bd9e6afb9542c9ad8924ba4563/transformed/browser-1.4.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/afcf66bd9e6afb9542c9ad8924ba4563/transformed/browser-1.4.0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/../firebasestorageex/caches/modules-2/files-2.1/androidx.browser/browser/1.4.0/2a2741f63427dcdb3b6821dd17703bc16ced13a1/browser-1.4.0-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.browser/browser/1.4.0/2a2741f63427dcdb3b6821dd17703bc16ced13a1/browser-1.4.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
