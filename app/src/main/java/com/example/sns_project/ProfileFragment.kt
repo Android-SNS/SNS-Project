@@ -150,7 +150,6 @@ class ProfileFragment : Fragment() {
                 followDTO = FollowDTO()
                 followDTO.follwingCount = 1
                 followDTO.followers[uid!!] = true
-
                 transaction.set(tsDocFollowing,followDTO)
                 return@runTransaction
             }
@@ -178,7 +177,6 @@ class ProfileFragment : Fragment() {
                 followDTO = FollowDTO()
                 followDTO!!.follwerCount = 1
                 followDTO!!.followers[currentUserUid!!] = true
-
                 transaction.set(tsDocFollower,followDTO!!)
                 return@runTransaction
             }
@@ -219,7 +217,6 @@ class ProfileFragment : Fragment() {
                 //데이터 가져오기
                 for(snapshot in querySnapshot.documents){
                     contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
-
                 }
                 //포스트 갯수
                 // fragmentView?.account_tv_post_count?.text = contentDTOs.size.toString()

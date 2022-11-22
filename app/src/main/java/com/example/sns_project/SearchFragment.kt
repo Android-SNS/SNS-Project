@@ -132,7 +132,6 @@ class SearchFragment : Fragment() {
                         followDTO = FollowDTO()
                         followDTO.follwingCount = 1
                         followDTO.followers[user.uid!!] = true
-
                         transaction.set(tsDocFollowing,followDTO)
                         return@runTransaction
                     }
@@ -156,7 +155,6 @@ class SearchFragment : Fragment() {
                         followDTO = FollowDTO()
                         followDTO!!.follwerCount = 1
                         followDTO!!.followers[currentUserUid] = true
-
                         transaction.set(tsDocFollower,followDTO!!)
                         return@runTransaction
                     }
