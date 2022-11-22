@@ -2,16 +2,10 @@ package com.example.sns_project
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.replace
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
@@ -32,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                 }.addOnFailureListener {  }
 
         ActivityCompat.requestPermissions(this,
-            arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
 
         //supportFragmentManager.beginTransaction().add(R.id.fl_con, NaviHomeFragment()).commit()
 

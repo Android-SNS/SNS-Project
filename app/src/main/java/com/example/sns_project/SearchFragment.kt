@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -88,10 +89,10 @@ class SearchFragment : Fragment() {
     }
 
     inner class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
-
-        }
+        private val firestore = FirebaseFirestore.getInstance()
+        private var currentUserUid = FirebaseAuth.getInstance().currentUser!!.uid
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.user_list, parent, false)
@@ -121,16 +122,56 @@ class SearchFragment : Fragment() {
             }
 
             followbtn.setOnClickListener {
-                if (followbtn.text.toString() == "follow"){
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(FirebaseAuth.getInstance().currentUser!!.uid)
-                        .child("following").child(user.uid!!).setValue(true)
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(user.uid!!)
-                        .child("followers").child(FirebaseAuth.getInstance().currentUser!!.uid).setValue(true)
-                } else {
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(FirebaseAuth.getInstance().currentUser!!.uid)
-                        .child("following").child(user.uid!!).removeValue()
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(user.uid!!)
-                        .child("followers").child(FirebaseAuth.getInstance().currentUser!!.uid).removeValue()
+                val tsDocFollowing = firestore.collection("following").document(currentUserUid)
+                val tsDocFollower = firestore.collection("following").document(user.uid!!)
+
+                firestore.runTransaction{ transaction ->
+                    var followDTO = transaction.get(tsDocFollowing).toObject(FollowDTO::class.java)
+                    //팔로우 하지 않은 상태
+                    if(followDTO == null){
+                        followDTO = FollowDTO()
+                        followDTO.follwingCount = 1
+                        followDTO.followers[user.uid!!] = true
+
+                        transaction.set(tsDocFollowing,followDTO)
+                        return@runTransaction
+                    }
+                    // 팔로우를 한 상태
+                    if(followDTO.followings.containsKey(user.uid)){
+                        // 팔로우 취소를 하면 된다.
+                        followDTO.follwingCount = followDTO.follwingCount - 1
+                        followDTO.followings.remove(user.uid)
+                    } else{
+                        // 팔로윙을 한다.
+                        followDTO.follwingCount = followDTO.follwingCount + 1
+                        followDTO.followings[user.uid!!] = true
+                    }
+                    transaction.set(tsDocFollowing,followDTO)
+                    return@runTransaction
+                }
+                // 내가 팔로잉 할 상대방 계정의 접근
+                firestore.runTransaction{ transaction ->
+                    var followDTO = transaction.get(tsDocFollower).toObject(FollowDTO::class.java)
+                    if(followDTO == null){
+                        followDTO = FollowDTO()
+                        followDTO!!.follwerCount = 1
+                        followDTO!!.followers[currentUserUid] = true
+
+                        transaction.set(tsDocFollower,followDTO!!)
+                        return@runTransaction
+                    }
+                    //상대방 계정에 내가 팔로우를 했을 경우
+                    if(followDTO!!.followers.containsKey(currentUserUid)){
+                        followDTO!!.follwerCount = followDTO!!.follwerCount - 1
+                        followDTO!!.followers.remove(currentUserUid)
+                    }
+                    // 상대방 계정에 내가 팔로우를 하지 않았을 경우
+                    else{
+                        followDTO!!.follwerCount = followDTO!!.follwerCount + 1
+                        followDTO!!.followers[currentUserUid] = true
+                    }
+                    transaction.set(tsDocFollower,followDTO!!)
+                    return@runTransaction
                 }
             }
         }
@@ -140,22 +181,16 @@ class SearchFragment : Fragment() {
         }
 
         private fun isFollowing(uid: String, button: Button) {
-            val reference = FirebaseDatabase.getInstance().reference.child("Follow").
-            child(FirebaseAuth.getInstance().currentUser!!.uid).child("following")
-            val valueEventListener = object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.child(uid).exists()){
-                        button.text = "following"
+            firestore.collection("following").document(uid)
+                .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+                    if (documentSnapshot == null) return@addSnapshotListener
+                    val followDTO = documentSnapshot.toObject(FollowDTO::class.java)
+                    if (followDTO?.followers!!.containsKey(currentUserUid)) {
+                        button.text = getString(R.string.follow_cancel)
                     } else {
-                        button.text = "follow"
+                        button.text = getString(R.string.follow)
                     }
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            }
-            reference.addValueEventListener(valueEventListener)
         }
     }
 
