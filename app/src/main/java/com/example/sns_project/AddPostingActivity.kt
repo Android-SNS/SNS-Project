@@ -8,14 +8,16 @@ import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.sns_project.databinding.ActivityAddpostBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
-import kotlinx.android.synthetic.main.activity_addpost.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,6 +30,9 @@ class AddPostingActivity : AppCompatActivity() {
     var auth : FirebaseAuth? = null //유저
     var firestore: FirebaseFirestore? = null //데이터베이스 파이어스토어
 
+    private lateinit var binding: ActivityAddpostBinding
+    private lateinit var launcher: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_addpost)
@@ -37,33 +42,31 @@ class AddPostingActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance() //파이어베이스 유저 가져오기
         firestore = FirebaseFirestore.getInstance() //파이어베이스 파이어스토어 가져오기
 
+        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                when(REQUEST_GET_IMAGE){
+                    REQUEST_GET_IMAGE -> {
+                        try{
+                            photoUri = it.data?.data
+                            binding.imageView.setImageURI(photoUri)
+                        } catch (e:Exception){}
+                    }
+                }
+            }
+        }
+
         //Open the album
-        imageView.setOnClickListener {
+        binding.imageView.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
-            startActivityForResult(intent, REQUEST_GET_IMAGE)
+            launcher.launch(intent)
         }
 
 
         //add image upload event
-        upload_button.setOnClickListener {
+        binding.uploadButton.setOnClickListener {
             Upload() //파이어베이스에 저장
             startActivity(Intent(this, MainActivity::class.java))
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if(resultCode == Activity.RESULT_OK){
-            when(requestCode){
-                REQUEST_GET_IMAGE -> {
-                    try{
-                        photoUri = data?.data
-                        imageView.setImageURI(photoUri)
-                    }catch (e:Exception){}
-                }
-            }
         }
     }
 
@@ -90,7 +93,7 @@ class AddPostingActivity : AppCompatActivity() {
             //유저의 UID
             contentDTO.uid = auth?.currentUser?.uid
             //게시물의 설명
-            contentDTO.explain = description.text.toString()
+            contentDTO.explain = binding.description.text.toString()
             //유저의 아이디
             contentDTO.userId = auth?.currentUser?.email
             //게시물 업로드 시간
