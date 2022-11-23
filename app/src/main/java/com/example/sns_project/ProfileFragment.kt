@@ -131,7 +131,6 @@ class ProfileFragment : Fragment() {
             if (uid != currentUserUid){
                 if(followDTO?.followers!!.containsKey(currentUserUid!!)){
                     view?.findViewById<Button>(R.id.account_btn_follow_signout)?.text = getString(R.string.follow_cancel)
-
                 }else{
                     view?.findViewById<Button>(R.id.account_btn_follow_signout)?.text = getString(R.string.follow)
                 }
