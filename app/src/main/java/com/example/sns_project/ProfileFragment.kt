@@ -210,8 +210,6 @@ class ProfileFragment : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-
-    @SuppressLint("NotifyDataSetChanged")
     inner class UserFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
         //var fragmentView =  inflater.inflate(R.layout.fragment_profile, container, false)
