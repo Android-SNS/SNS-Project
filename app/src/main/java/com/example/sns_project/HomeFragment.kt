@@ -39,7 +39,6 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
     var uid : String? = null
     var auth : FirebaseAuth? = null
 
@@ -79,23 +78,27 @@ class HomeFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     inner class HomeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         private var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
-        private var followDTOs : ArrayList<ContentDTO> = arrayListOf()
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
         private val firestore = FirebaseFirestore.getInstance()
 
         init {
-            firestore.collection("images").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                if(querySnapshot == null) return@addSnapshotListener
-                for(snapshot in querySnapshot.documents){
-                    contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
+            firestore.collection("following").document(uid!!).addSnapshotListener { documentSnapshot, _ ->
+                if (documentSnapshot == null) return@addSnapshotListener
+                val followDTO = documentSnapshot.toObject(FollowDTO::class.java)
+                if (!followDTO?.followings!!.containsKey(uid)) {
+                    for (i in followDTO.followings.keys) {
+                        firestore.collection("images").whereEqualTo("uid", i).addSnapshotListener { querySnapshot, _ ->
+                            if (querySnapshot == null) return@addSnapshotListener
+                            for (snapshot in querySnapshot.documents) {
+                                contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
+                            }
+                            notifyDataSetChanged()
+                        }
+                    }
                 }
+                notifyDataSetChanged()
             }
-            firestore.collection("following").document(uid!!).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                if(querySnapshot == null) return@addSnapshotListener
-                val followDTO = querySnapshot.toObject(FollowDTO::class.java)
-            }
-            notifyDataSetChanged()
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
