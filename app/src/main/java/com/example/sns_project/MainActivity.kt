@@ -36,8 +36,12 @@ class MainActivity : AppCompatActivity() {
                     R.id.home -> {
                         //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv1)
                         //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv1)
-
-                        HomeFragment()
+                        val homeFragment = HomeFragment()
+                        val bundle = Bundle()
+                        val uid = FirebaseAuth.getInstance().currentUser?.uid
+                        bundle.putString("destinationUid", uid)
+                        homeFragment.arguments = bundle
+                        homeFragment
                         // Respond to navigation item 1 click
                     }
                     R.id.search -> {

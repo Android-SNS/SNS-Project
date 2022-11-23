@@ -121,7 +121,7 @@ class ProfileFragment : Fragment() {
         //내페이지를 입력햇을때 내 uid 이고 상대방 페이지를 누르면 상대방의 uid
         firestore?.collection("following")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
             if(documentSnapshot == null) return@addSnapshotListener
-            val followDTO  = documentSnapshot.toObject(FollowDTO::class.java)
+            val followDTO = documentSnapshot.toObject(FollowDTO::class.java)
             if(followDTO?.follwingCount != null){
                 view?.findViewById<TextView>(R.id.account_tv_following_count)?.text = followDTO.follwingCount.toString()
             }

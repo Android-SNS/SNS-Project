@@ -1,5 +1,6 @@
 package com.example.sns_project
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -8,9 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 //import com.example.sns_project.databinding.FragmentHomeBinding
 
@@ -28,6 +38,9 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
+    var uid : String? = null
+    var auth : FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,53 +50,69 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val uploadView = inflater.inflate(R.layout.fragment_home, container, false)
-        //Intent addPostingActivity = new Intent(getActivity(), addPostingActivity.class)
-
-//        ActivityCompat.requestPermissions(activity,
-//            arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
         val fButton = uploadView.findViewById<FloatingActionButton>(R.id.floatingActionButton)
+        val homeView = uploadView.findViewById<RecyclerView>(R.id.homeView)
+        homeView.setHasFixedSize(true)
+
+        uid = arguments?.getString("destinationUid")
+        auth = FirebaseAuth.getInstance()
+
+        val adapter = HomeAdapter()
+        homeView.adapter = adapter
+        homeView.layoutManager = LinearLayoutManager(context)
 
         fButton.setOnClickListener {
             activity?.finish()
             startActivity(
                 Intent(activity, AddPostingActivity::class.java))
-//            if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-//                startActivity(
-//                    Intent(activity, AddPostingActivity::class.java)
-//                )
-//            }
         }
         return uploadView
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        val fragmentHomeBinding = FragmentHomeBinding.bind(view)
-//        val binding = fragmentHomeBinding
-//
-//        initFloatingButton(view)
-//
-//        binding!!.addFloatingButton
-//    }
+    @SuppressLint("NotifyDataSetChanged")
+    inner class HomeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+        private var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
+        private var followDTOs : ArrayList<ContentDTO> = arrayListOf()
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        val fragmentHomeBinding = FragmentHomeBinding.bind(view)
-//        fragmentHomeBinding.floatingActionButton.setOnClickListener {
-//            startActivity(Intent(this, addPostingActivity::class.java))
-//        }
-//
-//
-//    }
+        private val firestore = FirebaseFirestore.getInstance()
 
+        init {
+            firestore.collection("images").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                if(querySnapshot == null) return@addSnapshotListener
+                for(snapshot in querySnapshot.documents){
+                    contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
+                }
+            }
+            firestore.collection("following").document(uid!!).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                if(querySnapshot == null) return@addSnapshotListener
+                val followDTO = querySnapshot.toObject(FollowDTO::class.java)
+            }
+            notifyDataSetChanged()
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.post_item, parent, false)
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            val postings = contentDTOs[position]
+            val width = resources.displayMetrics.widthPixels
+            val imageView = (holder.itemView.findViewById(R.id.post_image) as ImageView)
+            imageView.layoutParams = LinearLayoutCompat.LayoutParams(width, width)
+            Glide.with(holder.itemView.context).load(contentDTOs[position].imageUrl).apply(RequestOptions().centerCrop()).into(imageView)
+            holder.itemView.findViewById<TextView>(R.id.username).text = postings.userId
+            holder.itemView.findViewById<TextView>(R.id.publisher).text = postings.userId
+            holder.itemView.findViewById<TextView>(R.id.description).text = postings.explain
+        }
+
+        override fun getItemCount(): Int {
+            return contentDTOs.size
+        }
+    }
 
     companion object {
         /**
