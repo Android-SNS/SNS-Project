@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         ActivityCompat.requestPermissions(this,
             arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
 
+//        //홈 시작을 디테일프래그먼트로
+//        bnv_main.selectedItemId = R.id.home
         //supportFragmentManager.beginTransaction().add(R.id.fl_con, NaviHomeFragment()).commit()
 
         bnv_main.setOnItemSelectedListener { item ->
@@ -35,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                         //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv1)
                         //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv1)
 
-                        HomeFragment()
+                        DetailFragment()
                         // Respond to navigation item 1 click
                     }
                     R.id.search -> {

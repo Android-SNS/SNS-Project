@@ -110,7 +110,35 @@ class ProfileFragment : Fragment() {
         override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
             val imageView = (p0 as CustomViewHolder).imageView
             Glide.with(p0.itemView.context).load(contentDTOs[p1].imageUrl).apply(RequestOptions().centerCrop()).into(imageView)
+
+            //클릭 이벤트
+//            val nextIntent = Intent(this, DetailPostActivity::class.java)
+//            nextIntent.putExtra("data", imageView)
+//            startActivity(nextIntent)
+
+            /*
+            p0.itemView.setOnClickListener {
+                System.out.println("click")
+                //activity?.finish()
+                //startActivity(
+                Intent(context, DetailPostActivity::class.java).apply {
+                    putExtra("data", )
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }.run {
+                    context?.startActivity(this)
+                }
+                /*val intent = Intent(this, DetailPostActivity::class.java)
+                intent.putExtra("data","https://firebasestorage.googleapis.com/v0/b/android-kotlin-86af2.appspot.com/o/images%2FJPEG_20221115_033230_.png?alt=media&token=7c6c1afd-de2c-4ad0-88f2-aa612a351dcd")
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)*/
+            }
+
+            */
+
         }
+
+
 
         override fun getItemCount(): Int {
             return contentDTOs.size
