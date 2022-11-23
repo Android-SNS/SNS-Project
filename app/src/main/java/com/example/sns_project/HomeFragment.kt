@@ -82,15 +82,14 @@ class HomeFragment : Fragment() {
                 if (documentSnapshot == null) return@addSnapshotListener
                 val followDTO = documentSnapshot.toObject(FollowDTO::class.java)
                 if (!followDTO?.followings!!.containsKey(uid)) {
-                    println(followDTO.followings.keys)
                     for (i in followDTO.followings.keys) {
-                        firestore.collection("images").whereEqualTo("uid", i)
-                            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                                if (querySnapshot == null) return@addSnapshotListener
-                                for (snapshot in querySnapshot.documents) {
-                                    contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
-                                }
+                        firestore.collection("images").whereEqualTo("uid", i).addSnapshotListener { querySnapshot, _ ->
+                            if (querySnapshot == null) return@addSnapshotListener
+                            for (snapshot in querySnapshot.documents) {
+                                contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
                             }
+                            notifyDataSetChanged()
+                        }
                     }
                 }
                 notifyDataSetChanged()

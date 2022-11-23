@@ -207,7 +207,6 @@ class ProfileFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     inner class UserFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
-        //var fragmentView =  inflater.inflate(R.layout.fragment_profile, container, false)
 
         //생성자
         init { //데이터 베이스의 값들을 읽어오기 // 내가 올린 이미지만 뜨게 할수 있도록
@@ -218,7 +217,6 @@ class ProfileFragment : Fragment() {
                     contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
                 }
                 //포스트 갯수
-                // fragmentView?.account_tv_post_count?.text = contentDTOs.size.toString()
                 view?.findViewById<TextView>(R.id.account_tv_post_count)?.text = contentDTOs.size.toString()
                 //리사이클러뷰가 최신화 할 수 있게
                 notifyDataSetChanged()
