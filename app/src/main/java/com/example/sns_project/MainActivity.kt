@@ -2,8 +2,6 @@ package com.example.sns_project
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -14,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.replace
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
@@ -22,12 +21,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val bnv_main = findViewById<BottomNavigationView>(R.id.bnv_main)
+        val email = FirebaseAuth.getInstance().currentUser?.email
+        val db = Firebase.firestore
+        val userCollection = db.collection("users")
+
+        userCollection.document(email!!).update("uid", FirebaseAuth.getInstance().currentUser?.uid)
+            .addOnSuccessListener {
+                }.addOnFailureListener {  }
 
         ActivityCompat.requestPermissions(this,
-            arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
 
-//        //홈 시작을 디테일프래그먼트로
-//        bnv_main.selectedItemId = R.id.home
         //supportFragmentManager.beginTransaction().add(R.id.fl_con, NaviHomeFragment()).commit()
 
         bnv_main.setOnItemSelectedListener { item ->
@@ -36,19 +40,23 @@ class MainActivity : AppCompatActivity() {
                     R.id.home -> {
                         //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv1)
                         //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv1)
-
-                        DetailFragment()
+                        val homeFragment = HomeFragment()
+                        val bundle = Bundle()
+                        val uid = FirebaseAuth.getInstance().currentUser?.uid
+                        bundle.putString("destinationUid", uid)
+                        homeFragment.arguments = bundle
+                        homeFragment
                         // Respond to navigation item 1 click
                     }
                     R.id.search -> {
                         //bnv_main.itemIconTintList = ContextCompat.getColorStateList(this, R.color.color_bnv2)
                         //bnv_main.itemTextColor = ContextCompat.getColorStateList(this, R.color.color_bnv2)
-                        var searchFragment = SearchFragment()
-                        var bundle = Bundle()
-                        var uid = FirebaseAuth.getInstance().currentUser?.uid
+                        val searchFragment = SearchFragment()
+                        val bundle = Bundle()
+                        val uid = FirebaseAuth.getInstance().currentUser?.uid
                         bundle.putString("destinationUid", uid)
                         searchFragment.arguments = bundle
-                        SearchFragment()
+                        searchFragment
                         // Respond to navigation item 2 click
                     }
                     R.id.profile -> {

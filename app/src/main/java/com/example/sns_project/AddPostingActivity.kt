@@ -1,5 +1,6 @@
 package com.example.sns_project
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -21,21 +22,19 @@ import com.google.firebase.storage.UploadTask
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-
 class AddPostingActivity : AppCompatActivity() {
     val REQUEST_GET_IMAGE = 105
     var storage: FirebaseStorage? = null //파이어베이스 객체를 담은 변수
     var photoUri : Uri? = null //사진 Uri를 담을 변수
     var auth : FirebaseAuth? = null //유저
     var firestore: FirebaseFirestore? = null //데이터베이스 파이어스토어
-
     private lateinit var binding: ActivityAddpostBinding
     private lateinit var launcher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_addpost)
+        binding = ActivityAddpostBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //Initiate storage
         storage = FirebaseStorage.getInstance() //파이어베이스 스토리지 가져오기
@@ -49,7 +48,7 @@ class AddPostingActivity : AppCompatActivity() {
                         try{
                             photoUri = it.data?.data
                             binding.imageView.setImageURI(photoUri)
-                        } catch (e:Exception){}
+                        } catch (_:Exception){}
                     }
                 }
             }
@@ -70,6 +69,7 @@ class AddPostingActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun Upload() {
         //make filename
         //val imgFileName = "IMAGE_${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}_.png"
