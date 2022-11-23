@@ -1,5 +1,6 @@
 package com.example.sns_project
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -47,7 +48,7 @@ class AddPostingActivity : AppCompatActivity() {
                         try{
                             photoUri = it.data?.data
                             binding.imageView.setImageURI(photoUri)
-                        } catch (e:Exception){}
+                        } catch (_:Exception){}
                     }
                 }
             }
@@ -60,6 +61,7 @@ class AddPostingActivity : AppCompatActivity() {
             launcher.launch(intent)
         }
 
+
         //add image upload event
         binding.uploadButton.setOnClickListener {
             Upload() //파이어베이스에 저장
@@ -67,6 +69,7 @@ class AddPostingActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun Upload() {
         //make filename
         //val imgFileName = "IMAGE_${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}_.png"
@@ -109,7 +112,7 @@ class AddPostingActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT).show()
             }
 
-    }
+        }
 
 
 }

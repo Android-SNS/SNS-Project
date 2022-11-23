@@ -32,6 +32,7 @@
             android:name=".MainActivity"
             android:exported="true"></activity>
         <activity android:name=".AddPostingActivity" />
+        <activity android:name=".DetailPostActivity" />
     </application>
 
 </manifest>
