@@ -43,7 +43,7 @@ class ProfileFragment : Fragment() {
     var firestore : FirebaseFirestore? = null
     var uid : String? = null
     private var auth : FirebaseAuth? = null
-    var currentUserUid : String? = null
+    private var currentUserUid : String? = null
     private lateinit var binding: FragmentProfileBinding
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private var photoUri: Uri? = null
@@ -119,7 +119,7 @@ class ProfileFragment : Fragment() {
 
     private fun getFollowerAndFollwing(){
         //내페이지를 입력햇을때 내 uid 이고 상대방 페이지를 누르면 상대방의 uid
-        firestore?.collection("following")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+        firestore?.collection("following")?.document(uid!!)?.addSnapshotListener { documentSnapshot, _ ->
             if(documentSnapshot == null) return@addSnapshotListener
             val followDTO = documentSnapshot.toObject(FollowDTO::class.java)
             if(followDTO?.follwingCount != null){
@@ -195,7 +195,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getProfileImage(){
-        firestore?.collection("profileImages")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+        firestore?.collection("profileImages")?.document(uid!!)?.addSnapshotListener { documentSnapshot, _ ->
             if(documentSnapshot == null) return@addSnapshotListener
             if(documentSnapshot.data != null){
                 val url = documentSnapshot.data!!["image"]
@@ -206,11 +206,11 @@ class ProfileFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     inner class UserFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-        var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
+        private var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
 
         //생성자
         init { //데이터 베이스의 값들을 읽어오기 // 내가 올린 이미지만 뜨게 할수 있도록
-            firestore?.collection("images")?.whereEqualTo("uid",uid)?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            firestore?.collection("images")?.whereEqualTo("uid",uid)?.addSnapshotListener { querySnapshot, _ ->
                 if(querySnapshot == null) return@addSnapshotListener
                 //데이터 가져오기
                 for(snapshot in querySnapshot.documents){
@@ -242,7 +242,7 @@ class ProfileFragment : Fragment() {
     }
 
     companion object {
-        var PICK_PROFILE_FROM_ALBUM = 10;
+        var PICK_PROFILE_FROM_ALBUM = 10
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.

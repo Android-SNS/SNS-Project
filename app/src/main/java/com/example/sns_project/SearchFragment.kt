@@ -33,8 +33,8 @@ class SearchFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
-    var uid : String? = null
-    var auth : FirebaseAuth? = null
+    private var uid : String? = null
+    private var auth : FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,8 +175,7 @@ class SearchFragment : Fragment() {
         }
 
         private fun isFollowing(uid: String, button: Button) {
-            firestore.collection("following").document(uid)
-                .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+            firestore.collection("following").document(uid).addSnapshotListener { documentSnapshot, _ ->
                     if (documentSnapshot == null) return@addSnapshotListener
                     val followDTO = documentSnapshot.toObject(FollowDTO::class.java)
                     if (followDTO?.followers!!.containsKey(currentUserUid)) {

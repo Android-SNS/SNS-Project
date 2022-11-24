@@ -2,18 +2,14 @@ package com.example.sns_project
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -21,8 +17,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-
-//import com.example.sns_project.databinding.FragmentHomeBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,7 +33,7 @@ class HomeFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     var uid : String? = null
-    var auth : FirebaseAuth? = null
+    private var auth : FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,15 +75,13 @@ class HomeFragment : Fragment() {
             firestore.collection("following").document(uid!!).addSnapshotListener { documentSnapshot, _ ->
                 if (documentSnapshot == null) return@addSnapshotListener
                 val followDTO = documentSnapshot.toObject(FollowDTO::class.java)
-                if (!followDTO?.followings!!.containsKey(uid)) {
-                    for (i in followDTO.followings.keys) {
-                        firestore.collection("images").whereEqualTo("uid", i).addSnapshotListener { querySnapshot, _ ->
-                            if (querySnapshot == null) return@addSnapshotListener
-                            for (snapshot in querySnapshot.documents) {
-                                contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
-                            }
-                            notifyDataSetChanged()
+                for (key in followDTO?.followings!!.keys) {
+                    firestore.collection("images").whereEqualTo("uid", key).addSnapshotListener { querySnapshot, _ ->
+                        if (querySnapshot == null) return@addSnapshotListener
+                        for (snapshot in querySnapshot.documents) {
+                            contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
                         }
+                        notifyDataSetChanged()
                     }
                 }
                 notifyDataSetChanged()
