@@ -5,18 +5,13 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sns_project.databinding.ActivityAddpostBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import java.text.SimpleDateFormat
@@ -35,7 +30,6 @@ class AddPostingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddpostBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         //Initiate storage
         storage = FirebaseStorage.getInstance() //파이어베이스 스토리지 가져오기
         auth = FirebaseAuth.getInstance() //파이어베이스 유저 가져오기
@@ -80,8 +74,6 @@ class AddPostingActivity : AppCompatActivity() {
         storageRef?.putFile(photoUri!!)?.continueWithTask() {task: com.google.android.gms.tasks.Task<UploadTask.TaskSnapshot> ->
             return@continueWithTask storageRef.downloadUrl}?.addOnSuccessListener {
                 uri ->
-            //progress_bar.visibility = View.GONE
-
             Toast.makeText(this, "Upload Success",
                 Toast.LENGTH_SHORT).show()
 
@@ -105,13 +97,8 @@ class AddPostingActivity : AppCompatActivity() {
             finish()
         }
             ?.addOnFailureListener {
-                //progress_bar.visibility = View.GONE
-
                 Toast.makeText(this, "fail...",
                     Toast.LENGTH_SHORT).show()
             }
-
         }
-
-
 }
