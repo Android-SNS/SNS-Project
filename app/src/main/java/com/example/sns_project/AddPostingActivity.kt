@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AddPostingActivity : AppCompatActivity() {
-    val REQUEST_GET_IMAGE = 105
+    private val REQUEST_GET_IMAGE = 105
     var storage: FirebaseStorage? = null //파이어베이스 객체를 담은 변수
     var photoUri : Uri? = null //사진 Uri를 담을 변수
     var auth : FirebaseAuth? = null //유저
@@ -30,7 +30,7 @@ class AddPostingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddpostBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //Initiate storage
+
         storage = FirebaseStorage.getInstance() //파이어베이스 스토리지 가져오기
         auth = FirebaseAuth.getInstance() //파이어베이스 유저 가져오기
         firestore = FirebaseFirestore.getInstance() //파이어베이스 파이어스토어 가져오기
@@ -64,13 +64,10 @@ class AddPostingActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat")
     fun Upload() {
-        //make filename
-        //val imgFileName = "IMAGE_${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}_.png"
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_.png"
         val storageRef = storage?.reference?.child("images")?.child(imageFileName)
 
-        //file upload(promise)
         storageRef?.putFile(photoUri!!)?.continueWithTask() {task: com.google.android.gms.tasks.Task<UploadTask.TaskSnapshot> ->
             return@continueWithTask storageRef.downloadUrl}?.addOnSuccessListener {
                 uri ->
