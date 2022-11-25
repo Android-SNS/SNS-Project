@@ -185,11 +185,13 @@ class ProfileFragment : Fragment() {
             }
             //상대방 계정에 내가 팔로우를 했을 경우
             if(followDTO!!.followers.containsKey(currentUserUid)){
+
                 followDTO!!.follwerCount = followDTO!!.follwerCount - 1
                 followDTO!!.followers.remove(currentUserUid!!)
             }
             // 상대방 계정에 내가 팔로우를 하지 않았을 경우
             else{
+
                 followDTO!!.follwerCount = followDTO!!.follwerCount + 1
                 followDTO!!.followers[currentUserUid!!] = true
             }
