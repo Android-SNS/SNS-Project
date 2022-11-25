@@ -25,6 +25,21 @@
         <entry key="..\:/SNS_Project/app/src/main/res/layout/fragment_profile.xml" value="0.20185185185185187" />
         <entry key="..\:/SNS_Project/app/src/main/res/layout/fragment_search.xml" value="0.20185185185185187" />
         <entry key="..\:/SNS_Project/app/src/main/res/menu/bottom_menu.xml" value="0.22592592592592592" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2265" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/drawable/ic_launcher_background.xml" value="0.254" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/activity_addpost.xml" value="0.2" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/activity_detailpost.xml" value="0.24320652173913043" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/activity_login.xml" value="0.20425724637681159" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/activity_main.xml" value="0.38787023977433005" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/activity_signup.xml" value="0.24320652173913043" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/activity_title.xml" value="0.24947916666666667" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/fragment_detail.xml" value="0.109375" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/fragment_home.xml" value="0.24320652173913043" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/fragment_profile.xml" value="0.24320652173913043" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/fragment_search.xml" value="0.24320652173913043" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/post_detail.xml" value="0.109375" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/post_item.xml" value="0.109375" />
+        <entry key="..\:/Users/82109/Desktop/GitHub/SNS-Project/app/src/main/res/layout/user_list.xml" value="0.24320652173913043" />
       </map>
     </option>
   </component>
