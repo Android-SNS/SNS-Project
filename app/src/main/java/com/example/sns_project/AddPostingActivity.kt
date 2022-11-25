@@ -57,16 +57,21 @@ class AddPostingActivity : AppCompatActivity() {
 
         //add image upload event
         binding.uploadButton.setOnClickListener {
-            Upload() //파이어베이스에 저장
+            upload() //파이어베이스에 저장
             startActivity(Intent(this, MainActivity::class.java))
         }
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun Upload() {
+    fun upload() {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_.png"
         val storageRef = storage?.reference?.child("images")?.child(imageFileName)
+        var nickname : String? = null
+        val user = firestore?.collection("users")!!.document(auth?.currentUser?.email!!)
+        user.get().addOnSuccessListener {
+            nickname = it.data?.get("nickname").toString()
+        }
 
         storageRef?.putFile(photoUri!!)?.continueWithTask() {task: com.google.android.gms.tasks.Task<UploadTask.TaskSnapshot> ->
             return@continueWithTask storageRef.downloadUrl}?.addOnSuccessListener {
@@ -84,6 +89,8 @@ class AddPostingActivity : AppCompatActivity() {
             contentDTO.explain = binding.description.text.toString()
             //유저의 아이디
             contentDTO.userId = auth?.currentUser?.email
+            //유저의 닉네임
+            contentDTO.nickname = nickname
             //게시물 업로드 시간
             contentDTO.timestamp = System.currentTimeMillis()
 
@@ -92,10 +99,9 @@ class AddPostingActivity : AppCompatActivity() {
 
             setResult(Activity.RESULT_OK)
             finish()
-        }
-            ?.addOnFailureListener {
+        }?.addOnFailureListener {
                 Toast.makeText(this, "fail...",
                     Toast.LENGTH_SHORT).show()
-            }
         }
+    }
 }

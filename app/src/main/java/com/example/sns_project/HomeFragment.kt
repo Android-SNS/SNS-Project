@@ -92,7 +92,7 @@ class HomeFragment : Fragment() {
             imageView.layoutParams = LinearLayoutCompat.LayoutParams(width, width)
             Glide.with(holder.itemView.context).load(contentDTOs[position].imageUrl).apply(RequestOptions().centerCrop()).into(imageView)
             holder.itemView.findViewById<TextView>(R.id.username).text = postings.userId
-            holder.itemView.findViewById<TextView>(R.id.publisher).text = postings.userId
+            holder.itemView.findViewById<TextView>(R.id.publisher).text = postings.nickname
             holder.itemView.findViewById<TextView>(R.id.description).text = postings.explain
         }
 
