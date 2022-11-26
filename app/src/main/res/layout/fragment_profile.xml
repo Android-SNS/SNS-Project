@@ -25,6 +25,8 @@
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/account_iv_profile"
             android:text="@string/follow"
+            android:background="#000000"
+            android:textColor="#FFFFFF"
             tools:ignore="TouchTargetSizeCheck" />
 
         <LinearLayout

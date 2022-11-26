@@ -2,7 +2,6 @@ package com.example.sns_project
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sns_project.databinding.ActivitySignupBinding

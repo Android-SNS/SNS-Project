@@ -4,8 +4,9 @@
     package="com.example.sns_project">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <application
         android:allowBackup="true"
@@ -17,10 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SNS_Project"
         tools:targetApi="31">
-
-        <activity android:name=".SignUpActivity" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".TitleActivity"
+            android:theme="@style/SplashTheme"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,11 +28,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".SignUpActivity"
+            android:theme="@style/SplashTheme"/>
+        <activity
+            android:theme="@style/SplashTheme"
+            android:name=".LoginActivity"
+            android:exported="true">
+        </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
-        <activity android:name=".AddPostingActivity" />
-        <activity android:name=".DetailPostActivity" />
+            android:theme="@style/SplashTheme"
+            android:exported="true" />
+        <activity android:name=".AddPostingActivity"
+            android:theme="@style/SplashTheme"/>
     </application>
 
 </manifest>
