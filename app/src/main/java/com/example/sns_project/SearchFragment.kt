@@ -105,7 +105,7 @@ class SearchFragment : Fragment() {
                 editor.apply()
 
                 activity!!.supportFragmentManager.beginTransaction().
-                replace(R.id.fl_container, ProfileFragment()).commit()
+                replace(R.id.fl_container, ProfileFragment()).addToBackStack(null).commit()
             }
 
             followbtn.setOnClickListener {
