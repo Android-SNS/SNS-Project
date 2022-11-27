@@ -33,12 +33,14 @@ class SignUpActivity : AppCompatActivity() {
         val userCollection = db.collection("users")
         val itemMap = hashMapOf(
             "userId" to userEmail,
-            "nickname" to nickname
+            "nickname" to nickname,
+            "firstLogin" to 0
         )
 
         userCollection.document(userEmail).set(itemMap)
             .addOnSuccessListener {
             }.addOnFailureListener {  }
+
         Firebase.auth.createUserWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this) {
                 startActivity(
