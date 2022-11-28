@@ -49,7 +49,6 @@ class HomeFragment : Fragment() {
         homeView.layoutManager = LinearLayoutManager(context)
 
         fButton.setOnClickListener {
-            activity?.finish()
             startActivity(
                 Intent(activity, AddPostingActivity::class.java))
         }

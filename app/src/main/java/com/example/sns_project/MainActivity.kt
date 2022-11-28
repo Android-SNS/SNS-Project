@@ -19,10 +19,25 @@ class MainActivity : AppCompatActivity() {
         val email = FirebaseAuth.getInstance().currentUser?.email
         val db = Firebase.firestore
         val userCollection = db.collection("users")
+        val itemMap = hashMapOf(
+            "login" to true
+        )
+
+        userCollection.whereEqualTo("firstLogin", 0).addSnapshotListener { querySnapshot, _ ->
+            if(querySnapshot == null) return@addSnapshotListener
+            val userDTO = querySnapshot.toObjects(UserDTO::class.java)
+            for (i in 0 until userDTO.size){
+                if (userDTO[i].firstLogin == 0 && userDTO[i].userId == email){
+                    db.collection("following").document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                        .set(itemMap)
+                    userCollection.document(email!!).update("firstLogin", 1)
+                }
+            }
+        }// 팔로우 관계 설정 위한 document 만들기 위한 함수
 
         userCollection.document(email!!).update("uid", FirebaseAuth.getInstance().currentUser?.uid)
             .addOnSuccessListener {
-                }.addOnFailureListener {  }
+            }.addOnFailureListener {  }
 
         ActivityCompat.requestPermissions(this,
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
