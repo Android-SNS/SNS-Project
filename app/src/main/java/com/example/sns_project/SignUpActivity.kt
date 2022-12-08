@@ -2,7 +2,6 @@ package com.example.sns_project
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sns_project.databinding.ActivitySignupBinding
@@ -34,12 +33,14 @@ class SignUpActivity : AppCompatActivity() {
         val userCollection = db.collection("users")
         val itemMap = hashMapOf(
             "userId" to userEmail,
-            "nickname" to nickname
+            "nickname" to nickname,
+            "firstLogin" to 0
         )
 
         userCollection.document(userEmail).set(itemMap)
             .addOnSuccessListener {
             }.addOnFailureListener {  }
+
         Firebase.auth.createUserWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this) {
                 startActivity(

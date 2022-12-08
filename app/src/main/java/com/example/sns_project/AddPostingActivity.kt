@@ -5,25 +5,20 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sns_project.databinding.ActivityAddpostBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AddPostingActivity : AppCompatActivity() {
-    val REQUEST_GET_IMAGE = 105
+    private val REQUEST_GET_IMAGE = 105
     var storage: FirebaseStorage? = null //파이어베이스 객체를 담은 변수
     var photoUri : Uri? = null //사진 Uri를 담을 변수
     var auth : FirebaseAuth? = null //유저
@@ -36,7 +31,6 @@ class AddPostingActivity : AppCompatActivity() {
         binding = ActivityAddpostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //Initiate storage
         storage = FirebaseStorage.getInstance() //파이어베이스 스토리지 가져오기
         auth = FirebaseAuth.getInstance() //파이어베이스 유저 가져오기
         firestore = FirebaseFirestore.getInstance() //파이어베이스 파이어스토어 가져오기
@@ -64,25 +58,25 @@ class AddPostingActivity : AppCompatActivity() {
 
         //add image upload event
         binding.uploadButton.setOnClickListener {
-            Upload() //파이어베이스에 저장
+            upload() //파이어베이스에 저장
             startActivity(Intent(this, MainActivity::class.java))
         }
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun Upload() {
-        //make filename
-        //val imgFileName = "IMAGE_${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}_.png"
+    fun upload() {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_.png"
         val storageRef = storage?.reference?.child("images")?.child(imageFileName)
+        var nickname : String? = null
+        val user = firestore?.collection("users")!!.document(auth?.currentUser?.email!!)
+        user.get().addOnSuccessListener {
+            nickname = it.data?.get("nickname").toString()
+        }
 
-        //file upload(promise)
         storageRef?.putFile(photoUri!!)?.continueWithTask() {task: com.google.android.gms.tasks.Task<UploadTask.TaskSnapshot> ->
             return@continueWithTask storageRef.downloadUrl}?.addOnSuccessListener {
                 uri ->
-            //progress_bar.visibility = View.GONE
-
             Toast.makeText(this, "Upload Success",
                 Toast.LENGTH_SHORT).show()
 
@@ -96,6 +90,8 @@ class AddPostingActivity : AppCompatActivity() {
             contentDTO.explain = binding.description.text.toString()
             //유저의 아이디
             contentDTO.userId = auth?.currentUser?.email
+            //유저의 닉네임
+            contentDTO.nickname = nickname
             //게시물 업로드 시간
             contentDTO.timestamp = System.currentTimeMillis()
 
@@ -104,15 +100,9 @@ class AddPostingActivity : AppCompatActivity() {
 
             setResult(Activity.RESULT_OK)
             finish()
-        }
-            ?.addOnFailureListener {
-                //progress_bar.visibility = View.GONE
-
+        }?.addOnFailureListener {
                 Toast.makeText(this, "fail...",
                     Toast.LENGTH_SHORT).show()
-            }
-
         }
-
-
+    }
 }

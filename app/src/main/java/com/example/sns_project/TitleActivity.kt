@@ -21,9 +21,3 @@ class TitleActivity : AppCompatActivity() {
         }, DURATION)
     }
 }
-
-
-
-
-
-

@@ -23,27 +23,17 @@ import com.example.sns_project.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
 class ProfileFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
     var firestore : FirebaseFirestore? = null
     var uid : String? = null
     private var auth : FirebaseAuth? = null
-    var currentUserUid : String? = null
+    private var currentUserUid : String? = null
     private lateinit var binding: FragmentProfileBinding
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private var photoUri: Uri? = null
@@ -58,12 +48,9 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_profile, container, false)
         val multiButton = fragmentView.findViewById<Button>(R.id.account_btn_follow_signout)
         val accountRecyclerview = fragmentView.findViewById<RecyclerView>(R.id.account_recyclerview)
-        //fragmentView?.account_tv_post_count?.text = "하위"
-        // return fragmentView
         //이전 화면에서 넘어온 값을 받아옴
         firestore = FirebaseFirestore.getInstance() //초기화
         auth = FirebaseAuth.getInstance() // 초기화
@@ -117,20 +104,20 @@ class ProfileFragment : Fragment() {
             launcher.launch(intent)
         }
         getProfileImage()
-        getFollowerAndFollwing()
+        getFollowerAndFollowing()
         return fragmentView
     }
 
-    private fun getFollowerAndFollwing(){
+    private fun getFollowerAndFollowing(){
         //내페이지를 입력햇을때 내 uid 이고 상대방 페이지를 누르면 상대방의 uid
-        firestore?.collection("following")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+        firestore?.collection("following")?.document(uid!!)?.addSnapshotListener { documentSnapshot, _ ->
             if(documentSnapshot == null) return@addSnapshotListener
             val followDTO = documentSnapshot.toObject(FollowDTO::class.java)
-            if(followDTO?.follwingCount != null){
-                view?.findViewById<TextView>(R.id.account_tv_following_count)?.text = followDTO.follwingCount.toString()
+            if(followDTO?.followingCount != null){
+                view?.findViewById<TextView>(R.id.account_tv_following_count)?.text = followDTO.followingCount.toString()
             }
-            if(followDTO?.follwerCount != null){
-                view?.findViewById<TextView>(R.id.account_tv_follower_count)?.text = followDTO.follwerCount.toString()
+            if(followDTO?.followerCount != null){
+                view?.findViewById<TextView>(R.id.account_tv_follower_count)?.text = followDTO.followerCount.toString()
             }
             if (uid != currentUserUid){
                 if(followDTO?.followers!!.containsKey(currentUserUid!!)){
@@ -151,7 +138,7 @@ class ProfileFragment : Fragment() {
             //팔로우 하지 않은 상태
             if(followDTO == null){
                 followDTO = FollowDTO()
-                followDTO.follwingCount = 1
+                followDTO.followingCount = 1
                 followDTO.followers[uid!!] = true
                 transaction.set(tsDocFollowing,followDTO)
                 return@runTransaction
@@ -159,12 +146,12 @@ class ProfileFragment : Fragment() {
             // 팔로우를 한 상태
             if(followDTO.followings.containsKey(uid)){
                 // 팔로우 취소를 하면 된다.
-                followDTO.follwingCount = followDTO.follwingCount - 1
+                followDTO.followingCount = followDTO.followingCount - 1
                 followDTO.followings.remove(uid)
             }
             else{
                 // 팔로윙을 한다.
-                followDTO.follwingCount = followDTO.follwingCount + 1
+                followDTO.followingCount = followDTO.followingCount + 1
                 followDTO.followings[uid!!] = true
             }
             transaction.set(tsDocFollowing,followDTO)
@@ -178,21 +165,19 @@ class ProfileFragment : Fragment() {
             var followDTO = transaction.get(tsDocFollower!!).toObject(FollowDTO::class.java)
             if(followDTO == null){
                 followDTO = FollowDTO()
-                followDTO!!.follwerCount = 1
+                followDTO!!.followerCount = 1
                 followDTO!!.followers[currentUserUid!!] = true
                 transaction.set(tsDocFollower,followDTO!!)
                 return@runTransaction
             }
             //상대방 계정에 내가 팔로우를 했을 경우
             if(followDTO!!.followers.containsKey(currentUserUid)){
-
-                followDTO!!.follwerCount = followDTO!!.follwerCount - 1
+                followDTO!!.followerCount = followDTO!!.followerCount - 1
                 followDTO!!.followers.remove(currentUserUid!!)
             }
             // 상대방 계정에 내가 팔로우를 하지 않았을 경우
             else{
-
-                followDTO!!.follwerCount = followDTO!!.follwerCount + 1
+                followDTO!!.followerCount = followDTO!!.followerCount + 1
                 followDTO!!.followers[currentUserUid!!] = true
             }
             transaction.set(tsDocFollower,followDTO!!)
@@ -201,7 +186,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getProfileImage(){
-        firestore?.collection("profileImages")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+        firestore?.collection("profileImages")?.document(uid!!)?.addSnapshotListener { documentSnapshot, _ ->
             if(documentSnapshot == null) return@addSnapshotListener
             if(documentSnapshot.data != null){
                 val url = documentSnapshot.data!!["image"]
@@ -212,11 +197,11 @@ class ProfileFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     inner class UserFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-        var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
+        private var contentDTOs : ArrayList<ContentDTO> = arrayListOf()
 
         //생성자
         init { //데이터 베이스의 값들을 읽어오기 // 내가 올린 이미지만 뜨게 할수 있도록
-            firestore?.collection("images")?.whereEqualTo("uid",uid)?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            firestore?.collection("images")?.whereEqualTo("uid",uid)?.addSnapshotListener { querySnapshot, _ ->
                 if(querySnapshot == null) return@addSnapshotListener
                 //데이터 가져오기
                 for(snapshot in querySnapshot.documents){
@@ -248,23 +233,6 @@ class ProfileFragment : Fragment() {
     }
 
     companion object {
-        var PICK_PROFILE_FROM_ALBUM = 10;
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProfileFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        var PICK_PROFILE_FROM_ALBUM = 10
     }
 }
